@@ -22,8 +22,41 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install 
+        
+      - name: Test proxy
+        env:
+          HTTP_PROXY_URL: ${{ secrets.HTTP_PROXY_URL }}
+        run: |
+          python - <<'PY'
+          import os
+          import requests
 
+          proxy = os.environ.get("HTTP_PROXY_URL")
+          proxies = {"http": proxy, "https": proxy} if proxy else None
+
+          headers = {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
+              "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+          }
+
+          for url in [
+              "https://api.ipify.org?format=json",
+              "https://www.tudocelular.com/",
+              "https://www.tudocelular.com/Motorola/precos/n9964/Motorola-Edge-60-Pro.html",
+          ]:
+              try:
+                  r = requests.get(url, headers=headers, proxies=proxies, timeout=30)
+                  print(url)
+                  print("STATUS:", r.status_code)
+                  print("BODY:", r.text[:300].replace("\n", " "))
+                  print()
+              except Exception as e:
+                  print(url)
+                  print("ERROR:", e)
+                  print()
+          PY
+          
       - name: Check prices
         env:
           SMTP_USER: ${{ secrets.SMTP_USER }}
