@@ -29,6 +29,7 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          HTTP_PROXY_URL: ${{ secrets.HTTP_PROXY_URL }}
         run: python check_prices.py
 
       - name: Commit state
