@@ -30,13 +30,37 @@ def save_state(state):
         encoding="utf-8"
     )
 
-
 def fetch_html(url):
     headers = {
-        "User-Agent": "Mozilla/5.0 price-alert"
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) "
+            "Gecko/20100101 Firefox/126.0"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.7,en;q=0.6",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Referer": "https://www.tudocelular.com/",
+        "DNT": "1",
     }
 
-    response = requests.get(url, headers=headers, timeout=30)
+    proxy_url = os.environ.get("HTTP_PROXY_URL")
+
+    proxies = None
+    if proxy_url:
+        proxies = {
+            "http": proxy_url,
+            "https": proxy_url,
+        }
+
+    response = requests.get(
+        url,
+        headers=headers,
+        timeout=30,
+        allow_redirects=True,
+        proxies=proxies,
+    )
+
     response.raise_for_status()
     return response.text
 
