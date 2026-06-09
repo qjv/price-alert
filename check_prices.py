@@ -46,6 +46,8 @@ def fetch_html(url):
 
     proxy_url = os.environ.get("HTTP_PROXY_URL")
 
+    print(f"  Proxy enabled: {'yes' if proxy_url else 'no'}")
+
     proxies = None
     if proxy_url:
         proxies = {
